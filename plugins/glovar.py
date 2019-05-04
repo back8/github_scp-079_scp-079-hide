@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 all_commands: List[str] = ["version"]
 
-version = "0.0.1"
+version = "0.0.2"
 
 # Read data from config.ini
 

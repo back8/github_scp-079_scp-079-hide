@@ -17,9 +17,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from json import dumps
+from json import dumps, loads
 from threading import Thread
-from typing import Callable, List
+from typing import Callable, List, Optional
+
+from pyrogram import Message
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -57,6 +59,28 @@ def format_data(sender: str, receivers: List[str], action: str, action_type: str
     }
 
     return code_block(dumps(data, indent=4))
+
+
+def get_text(message: Message) -> Optional[str]:
+    text = None
+    if message.text:
+        text = message.text
+    elif message.caption:
+        text = message.caption
+
+    return text
+
+
+def receive_data(message: Message) -> dict:
+    text = get_text(message)
+    try:
+        assert text is not None, f"Can't get text from message: {message}"
+        data = loads(text)
+        return data
+    except Exception as e:
+        logger.warning(f"Receive data error: {e}")
+
+    return {}
 
 
 def thread(target: Callable, args: tuple) -> bool:

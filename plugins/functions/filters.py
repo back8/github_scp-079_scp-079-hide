@@ -26,6 +26,14 @@ from .. import glovar
 logger = logging.getLogger(__name__)
 
 
+def is_exchange_channel(_, message: Message) -> bool:
+    cid = message.chat.id
+    if cid == glovar.exchange_channel_id:
+        return True
+
+    return False
+
+
 def is_hide_channel(_, message: Message) -> bool:
     cid = message.chat.id
     if cid == glovar.hide_channel_id:
@@ -40,6 +48,12 @@ def is_test_group(_, message: Message) -> bool:
         return True
 
     return False
+
+
+exchange_channel = Filters.create(
+    name="Exchange Channel",
+    func=is_exchange_channel
+)
 
 
 hide_channel = Filters.create(
