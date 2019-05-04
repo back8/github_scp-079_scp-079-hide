@@ -1,0 +1,23 @@
+[pyrogram]
+api_id = [DATA EXPUNGED]
+api_hash = [DATA EXPUNGED]
+
+[plugins]
+root = plugins
+include =
+    handlers.command
+    handlers.message
+
+[proxy]
+enabled = False
+hostname = 127.0.0.1
+port = 1080
+
+[basic]
+bot_token = [DATA EXPUNGED]
+prefix = /!
+
+[channels]
+exchange_channel_id = [DATA EXPUNGED]
+hide_channel_id = [DATA EXPUNGED]
+test_group_id = [DATA EXPUNGED]
