@@ -32,6 +32,13 @@ def bold(text) -> str:
     return ""
 
 
+def code(text) -> str:
+    if text != "":
+        return f"`{text}`"
+
+    return ""
+
+
 def code_block(text) -> str:
     if text != "":
         return f"```{text}```"

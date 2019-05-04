@@ -21,7 +21,7 @@ import logging
 from pyrogram import Client, Filters
 
 from .. import glovar
-from ..functions.etc import bold, thread, user_mention
+from ..functions.etc import code, bold, thread, user_mention
 from ..functions.filters import test_group
 
 from ..functions.telegram import send_message
@@ -36,7 +36,7 @@ def version(client, message):
         cid = message.chat.id
         aid = message.from_user.id
         mid = message.message_id
-        text = (f"版本：{bold(glovar.version)}\n"
+        text = (f"版本：{bold(glovar.version)} {code('HIDE')}\n"
                 f"管理员：{user_mention(aid)}")
         thread(send_message, (client, cid, text, mid))
     except Exception as e:
