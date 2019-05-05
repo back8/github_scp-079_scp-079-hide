@@ -35,25 +35,19 @@ logger = logging.getLogger(__name__)
 def forward_regex_data(_, message):
     try:
         data = receive_data(message)
-        sender = data["from"]
         receivers = data["to"]
-        # This will look awkward,
-        # seems like it can be simplified,
-        # but this is to ensure that the permissions are clear,
-        # so it is intentionally written like this
         if "WATCH" in receivers:
-            if sender == "REGEX":
-                flood_wait = True
-                while flood_wait:
-                    flood_wait = False
-                    try:
-                        message.forward(
-                            chat_id=glovar.hide_channel_id,
-                            as_copy=True
-                        )
-                    except FloodWait as e:
-                        flood_wait = True
-                        sleep(e.x + 1)
+            flood_wait = True
+            while flood_wait:
+                flood_wait = False
+                try:
+                    message.forward(
+                        chat_id=glovar.hide_channel_id,
+                        as_copy=True
+                    )
+                except FloodWait as e:
+                    flood_wait = True
+                    sleep(e.x + 1)
     except Exception as e:
         logger.warning(f"Forward regex data error: {e}", exc_info=True)
 
