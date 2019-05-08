@@ -19,7 +19,7 @@
 import logging
 from json import dumps, loads
 from threading import Thread
-from typing import Callable, List, Optional
+from typing import Callable, List
 
 from pyrogram import Message
 
@@ -28,21 +28,24 @@ logger = logging.getLogger(__name__)
 
 
 def bold(text) -> str:
-    if text != "":
+    # Get a bold text
+    if text:
         return f"**{text}**"
 
     return ""
 
 
 def code(text) -> str:
-    if text != "":
+    # Get a code text
+    if text:
         return f"`{text}`"
 
     return ""
 
 
 def code_block(text) -> str:
-    if text != "":
+    # Get a code block text
+    if text:
         return f"```{text}```"
 
     return ""
@@ -61,20 +64,26 @@ def format_data(sender: str, receivers: List[str], action: str, action_type: str
     return code_block(dumps(data, indent=4))
 
 
-def get_text(message: Message) -> Optional[str]:
-    text = None
-    if message.text:
-        text = message.text
-    elif message.caption:
-        text = message.caption
+def get_text(message: Message) -> str:
+    # Get message's text
+    text = ""
+    try:
+        if message.text or message.caption:
+            if message.text:
+                text += message.text
+            else:
+                text += message.caption
+    except Exception as e:
+        logger.warning(f"Get text error: {e}", exc_info=True)
 
     return text
 
 
 def receive_data(message: Message) -> dict:
+    # Receive data from exchange channel
     text = get_text(message)
     try:
-        assert text is not None, f"Can't get text from message: {message}"
+        assert text is not "", f"Can't get text from message: {message}"
         data = loads(text)
         return data
     except Exception as e:
@@ -84,6 +93,7 @@ def receive_data(message: Message) -> dict:
 
 
 def thread(target: Callable, args: tuple) -> bool:
+    # Call a function using thread
     t = Thread(target=target, args=args)
     t.daemon = True
     t.start()
@@ -92,4 +102,5 @@ def thread(target: Callable, args: tuple) -> bool:
 
 
 def user_mention(uid: int) -> str:
+    # Get a mention text
     return f"[{uid}](tg://user?id={uid})"
