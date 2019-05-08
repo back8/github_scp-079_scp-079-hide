@@ -27,9 +27,9 @@ logger = logging.getLogger(__name__)
 
 all_commands: List[str] = ["version"]
 
-sender = "HIDE"
+sender: str = "HIDE"
 
-version = "0.0.2"
+version: str = "0.0.2"
 
 # Read data from config.ini
 
