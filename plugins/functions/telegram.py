@@ -18,10 +18,10 @@
 
 import logging
 from time import sleep
-from typing import Optional
+from typing import Optional, Union
 
 from pyrogram import Client, InlineKeyboardMarkup, Message, ParseMode
-from pyrogram.errors import FloodWait
+from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
 
 
 # Enable logging
@@ -29,7 +29,8 @@ logger = logging.getLogger(__name__)
 
 
 def send_message(client: Client, cid: int, text: str, mid: int = None,
-                 markup: InlineKeyboardMarkup = None) -> Optional[Message]:
+                 markup: InlineKeyboardMarkup = None) -> Optional[Union[bool, Message]]:
+    # Send a message to a chat
     result = None
     try:
         if text.strip():
@@ -48,6 +49,8 @@ def send_message(client: Client, cid: int, text: str, mid: int = None,
                 except FloodWait as e:
                     flood_wait = True
                     sleep(e.x + 1)
+                except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
+                    return False
     except Exception as e:
         logger.warning(f"Send message to {cid} error: {e}", exc_info=True)
 

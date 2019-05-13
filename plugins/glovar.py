@@ -29,7 +29,9 @@ all_commands: List[str] = ["version"]
 
 sender: str = "HIDE"
 
-version: str = "0.0.2"
+should_hide: bool = False
+
+version: str = "0.0.3"
 
 # Read data from config.ini
 

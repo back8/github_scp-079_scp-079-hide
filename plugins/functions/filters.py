@@ -27,16 +27,19 @@ logger = logging.getLogger(__name__)
 
 
 def is_exchange_channel(_, message: Message) -> bool:
-    # Check if the message is sent from exchange channel
+    # Check if the message is sent from the exchange channel
     cid = message.chat.id
-    if cid == glovar.exchange_channel_id:
+    if glovar.should_hide:
+        if cid == glovar.hide_channel_id:
+            return True
+    elif cid == glovar.exchange_channel_id:
         return True
 
     return False
 
 
 def is_hide_channel(_, message: Message) -> bool:
-    # Check if the message is sent from hide channel
+    # Check if the message is sent from the hide channel
     cid = message.chat.id
     if cid == glovar.hide_channel_id:
         return True
@@ -45,7 +48,7 @@ def is_hide_channel(_, message: Message) -> bool:
 
 
 def is_test_group(_, message: Message) -> bool:
-    # Check if the message is sent from test group
+    # Check if the message is sent from the test group
     cid = message.chat.id
     if cid == glovar.test_group_id:
         return True
