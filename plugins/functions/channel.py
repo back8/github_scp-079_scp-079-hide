@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 def exchange_to_hide(client: Client) -> bool:
-    # Let other bots exchange data in hide channel instead
+    # Let other bots exchange data in the hide channel instead
     try:
         glovar.should_hide = True
         text = format_data(
@@ -51,7 +51,7 @@ def exchange_to_hide(client: Client) -> bool:
 
 def share_data(client: Client, receivers: List[str], action: str, action_type: str,
                data: Union[dict, int, str]) -> bool:
-    # Use this function to share data in exchange channel
+    # Use this function to share data in the exchange channel
     try:
         if glovar.sender in receivers:
             receivers.remove(glovar.sender)
