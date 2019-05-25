@@ -1,7 +1,7 @@
-# SCP-079-WATCH-HIDE - Hide the real watcher
+# SCP-079-HIDE - Hide the real watcher
 # Copyright (C) 2019 SCP-079 <https://scp-079.org>
 #
-# This file is part of SCP-079-WATCH-HIDE.
+# This file is part of SCP-079-HIDE.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published
@@ -18,10 +18,13 @@
 
 import logging
 from json import dumps, loads
+from random import uniform
 from threading import Thread
+from time import sleep
 from typing import Callable, List
 
 from pyrogram import Message
+from pyrogram.errors import FloodWait
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -29,7 +32,8 @@ logger = logging.getLogger(__name__)
 
 def bold(text) -> str:
     # Get a bold text
-    if text:
+    text = str(text)
+    if text.strip():
         return f"**{text}**"
 
     return ""
@@ -37,7 +41,8 @@ def bold(text) -> str:
 
 def code(text) -> str:
     # Get a code text
-    if text:
+    text = str(text)
+    if text.strip():
         return f"`{text}`"
 
     return ""
@@ -45,7 +50,8 @@ def code(text) -> str:
 
 def code_block(text) -> str:
     # Get a code block text
-    if text:
+    text = str(text)
+    if text.strip():
         return f"```{text}```"
 
     return ""
@@ -81,15 +87,15 @@ def get_text(message: Message) -> str:
 
 def receive_data(message: Message) -> dict:
     # Receive data from exchange channel
-    text = get_text(message)
+    data = {}
     try:
-        assert text is not "", f"Can't get text from message: {message}"
-        data = loads(text)
-        return data
+        text = get_text(message)
+        if text:
+            data = loads(text)
     except Exception as e:
         logger.warning(f"Receive data error: {e}")
 
-    return {}
+    return data
 
 
 def thread(target: Callable, args: tuple) -> bool:
@@ -104,3 +110,14 @@ def thread(target: Callable, args: tuple) -> bool:
 def user_mention(uid: int) -> str:
     # Get a mention text
     return f"[{uid}](tg://user?id={uid})"
+
+
+def wait_flood(e: FloodWait) -> bool:
+    # Wait flood secs
+    try:
+        sleep(e.x + uniform(0.5, 1.0))
+        return True
+    except Exception as e:
+        logger.warning(f"Wait flood error: {e}", exc_info=True)
+
+    return False

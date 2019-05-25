@@ -1,4 +1,4 @@
-# SCP-079-WATCH-HIDE
+# SCP-079-HIDE
 
 This bot is used to hide the real watcher.
 

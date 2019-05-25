@@ -1,7 +1,7 @@
-# SCP-079-WATCH-HIDE - Hide the real watcher
+# SCP-079-HIDE - Hide the real watcher
 # Copyright (C) 2019 SCP-079 <https://scp-079.org>
 #
-# This file is part of SCP-079-WATCH-HIDE.
+# This file is part of SCP-079-HIDE.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published
@@ -31,7 +31,7 @@ sender: str = "HIDE"
 
 should_hide: bool = False
 
-version: str = "0.0.3"
+version: str = "0.0.4"
 
 # Read data from config.ini
 
@@ -67,6 +67,6 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
     raise SystemExit('No proper settings')
 
 # Start program
-copyright_text = (f"SCP-079-WATCH-HIDE v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
+copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
                   "Licensed under the terms of the GNU General Public License v3 or later (GPLv3+)\n")
 print(copyright_text)

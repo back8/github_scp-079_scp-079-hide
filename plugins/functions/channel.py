@@ -1,7 +1,7 @@
-# SCP-079-WATCH-HIDE - Hide the real watcher
+# SCP-079-HIDE - Hide the real watcher
 # Copyright (C) 2019 SCP-079 <https://scp-079.org>
 #
-# This file is part of SCP-079-WATCH-HIDE.
+# This file is part of SCP-079-HIDE.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published
@@ -24,7 +24,6 @@ from pyrogram import Client
 from .. import glovar
 from .etc import format_data, thread
 from .telegram import send_message
-
 
 # Enable logging
 logger = logging.getLogger(__name__)
