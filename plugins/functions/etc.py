@@ -32,42 +32,56 @@ logger = logging.getLogger(__name__)
 
 def bold(text) -> str:
     # Get a bold text
-    text = str(text)
-    if text.strip():
-        return f"**{text}**"
+    try:
+        text = str(text)
+        if text.strip():
+            return f"**{text}**"
+    except Exception as e:
+        logger.warning(f"Bold error: {e}", exc_info=True)
 
     return ""
 
 
 def code(text) -> str:
     # Get a code text
-    text = str(text)
-    if text.strip():
-        return f"`{text}`"
+    try:
+        text = str(text)
+        if text.strip():
+            return f"`{text}`"
+    except Exception as e:
+        logger.warning(f"Code error: {e}", exc_info=True)
 
     return ""
 
 
 def code_block(text) -> str:
     # Get a code block text
-    text = str(text)
-    if text.strip():
-        return f"```{text}```"
+    try:
+        text = str(text)
+        if text.strip():
+            return f"```{text}```"
+    except Exception as e:
+        logger.warning(f"Code block error: {e}", exc_info=True)
 
     return ""
 
 
 def format_data(sender: str, receivers: List[str], action: str, action_type: str, data=None) -> str:
     # See https://scp-079.org/exchange/
-    data = {
-        "from": sender,
-        "to": receivers,
-        "action": action,
-        "type": action_type,
-        "data": data
-    }
+    text = ""
+    try:
+        data = {
+            "from": sender,
+            "to": receivers,
+            "action": action,
+            "type": action_type,
+            "data": data
+        }
+        text = code_block(dumps(data, indent=4))
+    except Exception as e:
+        logger.warning(f"Format data error: {e}", exc_info=True)
 
-    return code_block(dumps(data, indent=4))
+    return text
 
 
 def get_text(message: Message) -> str:
@@ -100,16 +114,26 @@ def receive_data(message: Message) -> dict:
 
 def thread(target: Callable, args: tuple) -> bool:
     # Call a function using thread
-    t = Thread(target=target, args=args)
-    t.daemon = True
-    t.start()
+    try:
+        t = Thread(target=target, args=args)
+        t.daemon = True
+        t.start()
+        return True
+    except Exception as e:
+        logger.warning(f"Thread error: {e}", exc_info=True)
 
-    return True
+    return False
 
 
 def user_mention(uid: int) -> str:
     # Get a mention text
-    return f"[{uid}](tg://user?id={uid})"
+    text = ""
+    try:
+        text = f"[{uid}](tg://user?id={uid})"
+    except Exception as e:
+        logger.warning(f"User mention error: {e}", exc_info=True)
+
+    return text
 
 
 def wait_flood(e: FloodWait) -> bool:
