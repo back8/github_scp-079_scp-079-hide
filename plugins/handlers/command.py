@@ -44,7 +44,7 @@ def version(client, message):
 
 
 @Client.on_message(Filters.incoming & Filters.group & test_group
-                   & Filters.command(["print"], glovar.prefix))
+                   & Filters.command(["print_test"], glovar.prefix))
 def print_message(client, message):
     try:
         cid = message.chat.id
