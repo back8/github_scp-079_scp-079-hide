@@ -21,7 +21,7 @@ import logging
 from pyrogram import Client, Filters
 
 from .. import glovar
-from ..functions.etc import code, bold, thread, user_mention
+from ..functions.etc import code, bold, thread, user_mention, code_block
 from ..functions.filters import test_group
 
 from ..functions.telegram import send_message
@@ -41,3 +41,20 @@ def version(client, message):
         thread(send_message, (client, cid, text, mid))
     except Exception as e:
         logger.warning(f"Version error: {e}", exc_info=True)
+
+
+@Client.on_message(Filters.incoming & Filters.group & test_group
+                   & Filters.command(["print"], glovar.prefix))
+def print_message(client, message):
+    try:
+        cid = message.chat.id
+        aid = message.from_user.id
+        mid = message.message_id
+        if message.reply_to_message:
+            text = str(message.reply_to_message).replace("pyrogram.", "")
+            text = (f"管理员：{user_mention(aid)}\n\n"
+                    f"消息结构：" + "-" * 24 + "\n\n"
+                    f"{code_block(text)}")
+            thread(send_message, (client, cid, text, mid))
+    except Exception as e:
+        logger.warning(f"Print message error: {e}", exc_info=True)
