@@ -19,11 +19,11 @@
 import logging
 from time import sleep
 
-from pyrogram import Client, Filters
+from pyrogram import Client, Filters, Message
 from pyrogram.errors import FloodWait
 
 from .. import glovar
-from ..functions.etc import receive_data
+from ..functions.channel import receive_text_data
 from ..functions.filters import exchange_channel, hide_channel
 
 # Enable logging
@@ -32,10 +32,10 @@ logger = logging.getLogger(__name__)
 
 @Client.on_message(Filters.incoming & Filters.channel & exchange_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_regex_data(_, message):
+def forward_regex_data(_, message: Message):
     try:
         if not glovar.should_hide:
-            data = receive_data(message)
+            data = receive_text_data(message)
             receivers = data["to"]
             if "WATCH" in receivers:
                 flood_wait = True
@@ -55,7 +55,7 @@ def forward_regex_data(_, message):
 
 @Client.on_message(Filters.incoming & Filters.channel & hide_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_watch_data(_, message):
+def forward_watch_data(_, message: Message):
     try:
         if not glovar.should_hide:
             flood_wait = True

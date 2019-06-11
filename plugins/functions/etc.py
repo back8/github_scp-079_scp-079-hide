@@ -17,11 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from json import dumps, loads
 from random import uniform
 from threading import Thread
 from time import sleep
-from typing import Callable, List
+from typing import Any, Callable
 
 from pyrogram import Message
 from pyrogram.errors import FloodWait
@@ -30,7 +29,7 @@ from pyrogram.errors import FloodWait
 logger = logging.getLogger(__name__)
 
 
-def bold(text) -> str:
+def bold(text: Any) -> str:
     # Get a bold text
     try:
         text = str(text)
@@ -42,7 +41,7 @@ def bold(text) -> str:
     return ""
 
 
-def code(text) -> str:
+def code(text: Any) -> str:
     # Get a code text
     try:
         text = str(text)
@@ -54,7 +53,7 @@ def code(text) -> str:
     return ""
 
 
-def code_block(text) -> str:
+def code_block(text: Any) -> str:
     # Get a code block text
     try:
         text = str(text)
@@ -64,24 +63,6 @@ def code_block(text) -> str:
         logger.warning(f"Code block error: {e}", exc_info=True)
 
     return ""
-
-
-def format_data(sender: str, receivers: List[str], action: str, action_type: str, data=None) -> str:
-    # See https://scp-079.org/exchange/
-    text = ""
-    try:
-        data = {
-            "from": sender,
-            "to": receivers,
-            "action": action,
-            "type": action_type,
-            "data": data
-        }
-        text = code_block(dumps(data, indent=4))
-    except Exception as e:
-        logger.warning(f"Format data error: {e}", exc_info=True)
-
-    return text
 
 
 def get_text(message: Message) -> str:
@@ -97,19 +78,6 @@ def get_text(message: Message) -> str:
         logger.warning(f"Get text error: {e}", exc_info=True)
 
     return text
-
-
-def receive_data(message: Message) -> dict:
-    # Receive data from exchange channel
-    data = {}
-    try:
-        text = get_text(message)
-        if text:
-            data = loads(text)
-    except Exception as e:
-        logger.warning(f"Receive data error: {e}")
-
-    return data
 
 
 def thread(target: Callable, args: tuple) -> bool:
