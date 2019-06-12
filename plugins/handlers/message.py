@@ -36,19 +36,20 @@ def forward_regex_data(_, message: Message):
     try:
         if not glovar.should_hide:
             data = receive_text_data(message)
-            receivers = data["to"]
-            if "WATCH" in receivers:
-                flood_wait = True
-                while flood_wait:
-                    flood_wait = False
-                    try:
-                        message.forward(
-                            chat_id=glovar.hide_channel_id,
-                            as_copy=True
-                        )
-                    except FloodWait as e:
-                        flood_wait = True
-                        sleep(e.x + 1)
+            if data:
+                receivers = data["to"]
+                if "WATCH" in receivers:
+                    flood_wait = True
+                    while flood_wait:
+                        flood_wait = False
+                        try:
+                            message.forward(
+                                chat_id=glovar.hide_channel_id,
+                                as_copy=True
+                            )
+                        except FloodWait as e:
+                            flood_wait = True
+                            sleep(e.x + 1)
     except Exception as e:
         logger.warning(f"Forward regex data error: {e}", exc_info=True)
 
@@ -58,16 +59,20 @@ def forward_regex_data(_, message: Message):
 def forward_watch_data(_, message: Message):
     try:
         if not glovar.should_hide:
-            flood_wait = True
-            while flood_wait:
-                flood_wait = False
-                try:
-                    message.forward(
-                        chat_id=glovar.exchange_channel_id,
-                        as_copy=True
-                    )
-                except FloodWait as e:
+            data = receive_text_data(message)
+            if data:
+                sender = data["from"]
+                if sender == "WATCH":
                     flood_wait = True
-                    sleep(e.x + 1)
+                    while flood_wait:
+                        flood_wait = False
+                        try:
+                            message.forward(
+                                chat_id=glovar.exchange_channel_id,
+                                as_copy=True
+                            )
+                        except FloodWait as e:
+                            flood_wait = True
+                            sleep(e.x + 1)
     except Exception as e:
         logger.warning(f"Forward watch data error: {e}", exc_info=True)
