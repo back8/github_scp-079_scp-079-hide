@@ -12,8 +12,8 @@ See [this article](https://scp-079.org/watch/).
 
 ## Requirements
 
-- Python 3.6 or higher.
-- `requirements.txt` : APScheduler pyrogram[fast]
+- Python 3.6 or higher
+- pip: `pip install -r requirements.txt` or `pip install -U APScheduler pyrogram[fast]`
 
 ## Files
 
