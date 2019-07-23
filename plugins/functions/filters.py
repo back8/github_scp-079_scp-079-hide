@@ -73,7 +73,6 @@ exchange_channel = Filters.create(
     name="Exchange Channel"
 )
 
-
 hide_channel = Filters.create(
     func=is_hide_channel,
     name="Hide Channel"
