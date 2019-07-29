@@ -4,7 +4,7 @@ This bot is used to hide the real watcher.
 
 ## How to use
 
-See [this article](https://scp-079.org/watch/).
+See [this article](https://scp-079.org/hide/).
 
 ## To Do List
 
