@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 @Client.on_message(Filters.incoming & Filters.channel & exchange_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_regex_data(_, message: Message):
+def forward_regex_data(_: Client, message: Message):
     try:
         if not glovar.should_hide:
             data = receive_text_data(message)
@@ -56,7 +56,7 @@ def forward_regex_data(_, message: Message):
 
 @Client.on_message(Filters.incoming & Filters.channel & hide_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_watch_data(_, message: Message):
+def forward_watch_data(_: Client, message: Message):
     try:
         if not glovar.should_hide:
             data = receive_text_data(message)

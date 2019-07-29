@@ -23,7 +23,6 @@ from pyrogram import Client, Filters, Message
 from .. import glovar
 from ..functions.etc import code, bold, thread, user_mention
 from ..functions.filters import test_group
-
 from ..functions.telegram import send_message
 
 # Enable logging
