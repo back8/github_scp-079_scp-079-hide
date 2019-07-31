@@ -43,6 +43,7 @@ def send_message(client: Client, cid: int, text: str, mid: int = None,
                         result = client.send_message(
                             chat_id=cid,
                             text=text_unit,
+                            parse_mode="html",
                             disable_web_page_preview=True,
                             reply_to_message_id=mid,
                             reply_markup=markup

@@ -20,7 +20,7 @@ import logging
 from random import uniform
 from threading import Thread
 from time import sleep
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 from pyrogram import Message
 from pyrogram.errors import FloodWait
@@ -34,7 +34,7 @@ def bold(text: Any) -> str:
     try:
         text = str(text)
         if text.strip():
-            return f"**{text}**"
+            return f"<b>{text}</b>"
     except Exception as e:
         logger.warning(f"Bold error: {e}", exc_info=True)
 
@@ -46,7 +46,7 @@ def code(text: Any) -> str:
     try:
         text = str(text)
         if text.strip():
-            return f"`{text}`"
+            return f"<code>{text}</code>"
     except Exception as e:
         logger.warning(f"Code error: {e}", exc_info=True)
 
@@ -58,11 +58,22 @@ def code_block(text: Any) -> str:
     try:
         text = str(text)
         if text.strip():
-            return f"```{text}```"
+            return f"<pre>{text}</pre>"
     except Exception as e:
         logger.warning(f"Code block error: {e}", exc_info=True)
 
     return ""
+
+
+def general_link(text: Union[int, str], link: str) -> str:
+    # Get a general markdown link
+    result = ""
+    try:
+        result = f'<a href="{link}">{text}</a>'
+    except Exception as e:
+        logger.warning(f"General link error: {e}", exc_info=True)
+
+    return result
 
 
 def get_text(message: Message) -> str:
@@ -97,7 +108,7 @@ def user_mention(uid: int) -> str:
     # Get a mention text
     text = ""
     try:
-        text = f"[{uid}](tg://user?id={uid})"
+        text = general_link(f"{uid}", f"tg://user?id={uid}")
     except Exception as e:
         logger.warning(f"User mention error: {e}", exc_info=True)
 
