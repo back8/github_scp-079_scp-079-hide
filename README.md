@@ -19,7 +19,7 @@ See [this article](https://scp-079.org/hide/).
 
 - plugins
     - functions
-        - `channel.py` : Send messages to channel
+        - `channel.py` : Functions about channel
         - `etc.py` : Miscellaneous
         - `filters.py` : Some filters
         - `telegram.py` : Some telegram functions
