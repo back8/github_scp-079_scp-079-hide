@@ -41,6 +41,7 @@ prefix: List[str] = []
 prefix_str: str = "/!"
 
 # [channels]
+critical_channel_id: int = 0
 exchange_channel_id: int = 0
 hide_channel_id: int = 0
 test_group_id: int = 0
@@ -52,6 +53,7 @@ try:
     bot_token = config["basic"].get("bot_token", bot_token)
     prefix = list(config["basic"].get("prefix", prefix_str))
     # [channels]
+    critical_channel_id = int(config["channels"].get("critical_channel_id", critical_channel_id))
     exchange_channel_id = int(config["channels"].get("exchange_channel_id", exchange_channel_id))
     hide_channel_id = int(config["channels"].get("hide_channel_id", hide_channel_id))
     test_group_id = int(config["channels"].get("test_group_id", test_group_id))
@@ -61,6 +63,7 @@ except Exception as e:
 # Check
 if (bot_token in {"", "[DATA EXPUNGED]"}
         or prefix == []
+        or critical_channel_id == 0
         or exchange_channel_id == 0
         or hide_channel_id == 0
         or test_group_id == 0):
