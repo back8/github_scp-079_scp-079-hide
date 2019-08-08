@@ -17,62 +17,72 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from time import sleep
 
 from pyrogram import Client, Filters, Message
-from pyrogram.errors import FloodWait
 
 from .. import glovar
-from ..functions.channel import receive_text_data
+from ..functions.channel import exchange_to_hide, receive_text_data
 from ..functions.filters import exchange_channel, hide_channel
+from ..functions.telegram import forward_messages
 
 # Enable logging
 logger = logging.getLogger(__name__)
 
 
+@Client.on_message(Filters.incoming & Filters.channel & hide_channel
+                   & ~Filters.command(glovar.all_commands, glovar.prefix))
+def exchange_emergency(_: Client, message: Message):
+    try:
+        # Read basic information
+        data = receive_text_data(message)
+        if data:
+            sender = data["from"]
+            receivers = data["to"]
+            action = data["action"]
+            action_type = data["type"]
+            data = data["data"]
+            if "EMERGENCY" in receivers:
+                if action == "backup":
+                    if action_type == "hide":
+                        if data is True:
+                            glovar.should_hide = data
+                        elif data is False and sender == "MANAGE":
+                            glovar.should_hide = data
+    except Exception as e:
+        logger.warning(f"Exchange emergency error: {e}", exc_info=True)
+
+
 @Client.on_message(Filters.incoming & Filters.channel & exchange_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_regex_data(_: Client, message: Message):
+def forward_regex_data(client: Client, message: Message):
     try:
         if not glovar.should_hide:
             data = receive_text_data(message)
             if data:
                 receivers = data["to"]
                 if "WATCH" in receivers:
-                    flood_wait = True
-                    while flood_wait:
-                        flood_wait = False
-                        try:
-                            message.forward(
-                                chat_id=glovar.hide_channel_id,
-                                as_copy=True
-                            )
-                        except FloodWait as e:
-                            flood_wait = True
-                            sleep(e.x + 1)
+                    cid = glovar.hide_channel_id
+                    fid = message.chat.id
+                    mid = message.message_id
+                    if forward_messages(client, cid, fid, [mid], True) is False:
+                        exchange_to_hide(client)
     except Exception as e:
         logger.warning(f"Forward regex data error: {e}", exc_info=True)
 
 
 @Client.on_message(Filters.incoming & Filters.channel & hide_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_watch_data(_: Client, message: Message):
+def forward_watch_data(client: Client, message: Message):
     try:
         if not glovar.should_hide:
             data = receive_text_data(message)
             if data:
                 sender = data["from"]
                 if sender == "WATCH":
-                    flood_wait = True
-                    while flood_wait:
-                        flood_wait = False
-                        try:
-                            message.forward(
-                                chat_id=glovar.exchange_channel_id,
-                                as_copy=True
-                            )
-                        except FloodWait as e:
-                            flood_wait = True
-                            sleep(e.x + 1)
+                    cid = glovar.exchange_channel_id
+                    fid = message.chat.id
+                    mid = message.message_id
+                    if forward_messages(client, cid, fid, [mid], True) is False:
+                        exchange_to_hide(client)
     except Exception as e:
         logger.warning(f"Forward watch data error: {e}", exc_info=True)

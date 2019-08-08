@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Optional, Union
+from typing import Iterable, List, Optional, Union
 
 from pyrogram import Client, InlineKeyboardMarkup, Message
 from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
@@ -26,6 +26,33 @@ from .etc import wait_flood
 
 # Enable logging
 logger = logging.getLogger(__name__)
+
+
+def forward_messages(client: Client, cid: int, fid: int, mids: Iterable,
+                     as_copy: bool = False) -> Union[List[Message], bool]:
+    # Forward messages to a chat
+    result = []
+    try:
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.forward_messages(
+                    chat_id=cid,
+                    from_chat_id=fid,
+                    message_ids=mids,
+                    disable_notification=True,
+                    as_copy=as_copy
+                )
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+            except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
+                return False
+    except Exception as e:
+        logger.warning(f"Forward messages error: {e}", exc_info=True)
+
+    return result
 
 
 def send_message(client: Client, cid: int, text: str, mid: int = None,
