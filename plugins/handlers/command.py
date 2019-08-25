@@ -21,6 +21,7 @@ import logging
 from pyrogram import Client, Filters, Message
 
 from .. import glovar
+from ..functions.channel import share_data
 from ..functions.etc import bold, thread, user_mention
 from ..functions.filters import test_group
 from ..functions.telegram import send_message
@@ -31,6 +32,7 @@ logger = logging.getLogger(__name__)
 @Client.on_message(Filters.incoming & Filters.group & test_group
                    & Filters.command(["version"], glovar.prefix))
 def version(client: Client, message: Message):
+    # Check the program's version
     try:
         cid = message.chat.id
         aid = message.from_user.id
@@ -38,5 +40,15 @@ def version(client: Client, message: Message):
         text = (f"管理员：{user_mention(aid)}\n\n"
                 f"版本：{bold(glovar.version)}\n")
         thread(send_message, (client, cid, text, mid))
+        share_data(
+            client=client,
+            receivers=["WATCH"],
+            action="update",
+            action_type="version",
+            data={
+                "admin_id": aid,
+                "message_id": mid
+            }
+        )
     except Exception as e:
         logger.warning(f"Version error: {e}", exc_info=True)
