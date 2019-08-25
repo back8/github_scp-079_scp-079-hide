@@ -89,8 +89,8 @@ def forward_watch_data(client: Client, message: Message):
                 if sender == "WATCH":
                     # Send version text to TEST group
                     if glovar.sender in receivers:
-                        if action == "update":
-                            if action_type == "version":
+                        if action == "version":
+                            if action_type == "reply":
                                 admin_id = data["admin_id"]
                                 message_id = data["message_id"]
                                 version = data["version"]

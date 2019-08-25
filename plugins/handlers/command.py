@@ -43,8 +43,8 @@ def version(client: Client, message: Message):
         share_data(
             client=client,
             receivers=["WATCH"],
-            action="update",
-            action_type="version",
+            action="version",
+            action_type="ask",
             data={
                 "admin_id": aid,
                 "message_id": mid
