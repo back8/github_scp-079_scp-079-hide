@@ -57,8 +57,8 @@ def exchange_emergency(_: Client, message: Message):
 
 @Client.on_message(Filters.incoming & Filters.channel & exchange_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_regex_data(client: Client, message: Message):
-    # Forward message from REGEX to WATCH
+def forward_others_data(client: Client, message: Message):
+    # Forward message from other bots to WATCH
     try:
         if not glovar.should_hide:
             data = receive_text_data(message)

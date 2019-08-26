@@ -79,7 +79,7 @@ def share_data(client: Client, receivers: List[str], action: str, action_type: s
             receivers.remove(glovar.sender)
 
         if receivers:
-            if glovar.should_hide:
+            if glovar.should_hide or action == "version":
                 channel_id = glovar.hide_channel_id
             else:
                 channel_id = glovar.exchange_channel_id
