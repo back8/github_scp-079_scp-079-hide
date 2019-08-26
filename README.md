@@ -22,6 +22,7 @@ See [this article](https://scp-079.org/hide/).
         - `channel.py` : Functions about channel
         - `etc.py` : Miscellaneous
         - `filters.py` : Some filters
+        - `receive.py` : Receive data from exchange channel
         - `telegram.py` : Some telegram functions
         - `timers.py` : Timer functions
     - handlers

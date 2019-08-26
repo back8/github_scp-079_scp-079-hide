@@ -21,9 +21,10 @@ import logging
 from pyrogram import Client, Filters, Message
 
 from .. import glovar
-from ..functions.channel import exchange_to_hide, receive_text_data
+from ..functions.channel import exchange_to_hide
 from ..functions.etc import bold, code, thread, user_mention
 from ..functions.filters import exchange_channel, hide_channel
+from ..functions.receive import receive_text_data
 from ..functions.telegram import forward_messages, send_message
 
 # Enable logging
