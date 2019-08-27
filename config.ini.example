@@ -22,3 +22,6 @@ critical_channel_id = [DATA EXPUNGED]
 exchange_channel_id = [DATA EXPUNGED]
 hide_channel_id = [DATA EXPUNGED]
 test_group_id = [DATA EXPUNGED]
+
+[custom]
+hiders = [DATA EXPUNGED]

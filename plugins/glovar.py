@@ -18,7 +18,7 @@
 
 import logging
 from configparser import RawConfigParser
-from typing import List, Set
+from typing import List, Set, Union
 
 # Enable logging
 logging.basicConfig(
@@ -32,8 +32,6 @@ logger = logging.getLogger(__name__)
 # Init
 
 all_commands: List[str] = ["version"]
-
-hiders: Set[str] = {"ME", "WATCH"}
 
 sender: str = "HIDE"
 
@@ -54,6 +52,9 @@ exchange_channel_id: int = 0
 hide_channel_id: int = 0
 test_group_id: int = 0
 
+# [custom]
+hiders: Union[str, Set[str]] = ""
+
 try:
     config = RawConfigParser()
     config.read("config.ini")
@@ -65,6 +66,8 @@ try:
     exchange_channel_id = int(config["channels"].get("exchange_channel_id", exchange_channel_id))
     hide_channel_id = int(config["channels"].get("hide_channel_id", hide_channel_id))
     test_group_id = int(config["channels"].get("test_group_id", test_group_id))
+    # [custom]
+    hiders = config["custom"].get("hiders", hiders)
 except Exception as e:
     logger.warning(f"Read data from config.ini error: {e}", exc_info=True)
 
@@ -74,9 +77,13 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or critical_channel_id == 0
         or exchange_channel_id == 0
         or hide_channel_id == 0
-        or test_group_id == 0):
+        or test_group_id == 0
+        or hiders in {"", "[DATA EXPUNGED]"}):
     logger.critical("No proper settings")
     raise SystemExit("No proper settings")
+
+# Get hiders
+hiders = set(hiders.split(" "))
 
 # Start program
 copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
