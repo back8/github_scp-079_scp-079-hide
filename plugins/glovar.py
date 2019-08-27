@@ -18,7 +18,7 @@
 
 import logging
 from configparser import RawConfigParser
-from typing import List
+from typing import List, Set
 
 # Enable logging
 logging.basicConfig(
@@ -33,11 +33,13 @@ logger = logging.getLogger(__name__)
 
 all_commands: List[str] = ["version"]
 
+hiders: Set[str] = {"ME", "WATCH"}
+
 sender: str = "HIDE"
 
 should_hide: bool = False
 
-version: str = "0.0.6"
+version: str = "0.0.7"
 
 # Read data from config.ini
 

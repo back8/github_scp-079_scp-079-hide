@@ -58,26 +58,26 @@ def exchange_emergency(_: Client, message: Message):
 @Client.on_message(Filters.incoming & Filters.channel & exchange_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
 def forward_others_data(client: Client, message: Message):
-    # Forward message from other bots to WATCH
+    # Forward message from other bots to hiders
     try:
         if not glovar.should_hide:
             data = receive_text_data(message)
             if data:
                 receivers = data["to"]
-                if "WATCH" in receivers:
+                if any([hider in receivers for hider in glovar.hiders]):
                     cid = glovar.hide_channel_id
                     fid = message.chat.id
                     mid = message.message_id
                     if forward_messages(client, cid, fid, [mid], True) is False:
                         exchange_to_hide(client)
     except Exception as e:
-        logger.warning(f"Forward regex data error: {e}", exc_info=True)
+        logger.warning(f"Forward others data error: {e}", exc_info=True)
 
 
 @Client.on_message(Filters.incoming & Filters.channel & hide_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_watch_data(client: Client, message: Message):
-    # Forward message from WATCH to other bots
+def forward_hiders_data(client: Client, message: Message):
+    # Forward message from hiders to other bots
     try:
         if not glovar.should_hide:
             data = receive_text_data(message)
@@ -87,7 +87,7 @@ def forward_watch_data(client: Client, message: Message):
                 action = data["action"]
                 action_type = data["type"]
                 data = data["data"]
-                if sender == "WATCH":
+                if sender in glovar.hiders:
                     # Send version text to TEST group
                     if glovar.sender in receivers:
                         if action == "version":
@@ -96,7 +96,7 @@ def forward_watch_data(client: Client, message: Message):
                                 message_id = data["message_id"]
                                 version = data["version"]
                                 text = (f"管理员：{user_mention(admin_id)}\n\n"
-                                        f"发送者：{code('WATCH')}\n"
+                                        f"发送者：{code(sender)}\n"
                                         f"版本：{bold(version)}\n")
                                 thread(send_message, (client, glovar.test_group_id, text, message_id))
                     # Forward regular exchange text
@@ -107,4 +107,4 @@ def forward_watch_data(client: Client, message: Message):
                         if forward_messages(client, cid, fid, [mid], True) is False:
                             exchange_to_hide(client)
     except Exception as e:
-        logger.warning(f"Forward watch data error: {e}", exc_info=True)
+        logger.warning(f"Forward hiders data error: {e}", exc_info=True)
