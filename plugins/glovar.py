@@ -1,4 +1,4 @@
-# SCP-079-HIDE - Hide the real watcher
+# SCP-079-HIDE - Hide the real sender
 # Copyright (C) 2019 SCP-079 <https://scp-079.org>
 #
 # This file is part of SCP-079-HIDE.

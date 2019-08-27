@@ -1,6 +1,6 @@
 # SCP-079-HIDE
 
-This bot is used to hide the real watcher.
+This bot is used to hide the real sender.
 
 ## How to use
 
