@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 @Client.on_message(Filters.incoming & Filters.channel & hide_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix), group=-1)
-def exchange_emergency(_: Client, message: Message):
+def exchange_emergency(_: Client, message: Message) -> bool:
     # Sent emergency channel transfer request
     try:
         # Read basic information
@@ -51,13 +51,16 @@ def exchange_emergency(_: Client, message: Message):
                             glovar.should_hide = data
                         elif data is False and sender == "MANAGE":
                             glovar.should_hide = data
+
+        return True
     except Exception as e:
         logger.warning(f"Exchange emergency error: {e}", exc_info=True)
 
+    return False
 
 @Client.on_message(Filters.incoming & Filters.channel & exchange_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_others_data(client: Client, message: Message):
+def forward_others_data(client: Client, message: Message) -> bool:
     # Forward message from other bots to hiders
     try:
         if not glovar.should_hide:
@@ -70,13 +73,17 @@ def forward_others_data(client: Client, message: Message):
                     mid = message.message_id
                     if forward_messages(client, cid, fid, [mid], True) is False:
                         exchange_to_hide(client)
+
+        return True
     except Exception as e:
         logger.warning(f"Forward others data error: {e}", exc_info=True)
+
+    return False
 
 
 @Client.on_message(Filters.incoming & Filters.channel & hide_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
-def forward_hiders_data(client: Client, message: Message):
+def forward_hiders_data(client: Client, message: Message) -> bool:
     # Forward message from hiders to other bots
     try:
         if not glovar.should_hide:
@@ -106,5 +113,9 @@ def forward_hiders_data(client: Client, message: Message):
                         mid = message.message_id
                         if forward_messages(client, cid, fid, [mid], True) is False:
                             exchange_to_hide(client)
+
+        return True
     except Exception as e:
         logger.warning(f"Forward hiders data error: {e}", exc_info=True)
+
+    return False
