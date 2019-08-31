@@ -40,16 +40,19 @@ def version(client: Client, message: Message) -> bool:
         text = (f"管理员：{user_mention(aid)}\n\n"
                 f"版本：{bold(glovar.version)}\n")
         thread(send_message, (client, cid, text, mid))
-        share_data(
-            client=client,
-            receivers=["WATCH"],
-            action="version",
-            action_type="ask",
-            data={
-                "admin_id": aid,
-                "message_id": mid
-            }
-        )
+
+        # Request version update
+        for hider in glovar.hiders:
+            share_data(
+                client=client,
+                receivers=[hider],
+                action="version",
+                action_type="ask",
+                data={
+                    "admin_id": aid,
+                    "message_id": mid
+                }
+            )
 
         return True
     except Exception as e:
