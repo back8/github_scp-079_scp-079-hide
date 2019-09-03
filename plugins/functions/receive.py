@@ -19,9 +19,11 @@
 import logging
 from json import loads
 
-from pyrogram import Message
+from pyrogram import Client, Message
 
-from .etc import get_text
+from .. import glovar
+from .etc import bold, code, get_text, thread, user_mention
+from .telegram import send_message
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -38,3 +40,21 @@ def receive_text_data(message: Message) -> dict:
         logger.warning(f"Receive data error: {e}")
 
     return data
+
+
+def receive_version_reply(client: Client, sender: str, data: dict) -> bool:
+    # Receive version reply
+    try:
+        admin_id = data["admin_id"]
+        message_id = data["message_id"]
+        version = data["version"]
+        text = (f"管理员：{user_mention(admin_id)}\n\n"
+                f"发送者：{code(sender)}\n"
+                f"版本：{bold(version)}\n")
+        thread(send_message, (client, glovar.test_group_id, text, message_id))
+
+        return True
+    except Exception as e:
+        logger.warning(f"Receive version reply error: {e}", exc_info=True)
+
+    return False

@@ -22,10 +22,9 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import exchange_to_hide
-from ..functions.etc import bold, code, thread, user_mention
 from ..functions.filters import exchange_channel, hide_channel
-from ..functions.receive import receive_text_data
-from ..functions.telegram import forward_messages, send_message
+from ..functions.receive import receive_text_data, receive_version_reply
+from ..functions.telegram import forward_messages
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -99,13 +98,7 @@ def forward_hiders_data(client: Client, message: Message) -> bool:
                     if glovar.sender in receivers:
                         if action == "version":
                             if action_type == "reply":
-                                admin_id = data["admin_id"]
-                                message_id = data["message_id"]
-                                version = data["version"]
-                                text = (f"管理员：{user_mention(admin_id)}\n\n"
-                                        f"发送者：{code(sender)}\n"
-                                        f"版本：{bold(version)}\n")
-                                thread(send_message, (client, glovar.test_group_id, text, message_id))
+                                receive_version_reply(client, sender, data)
                     # Forward regular exchange text
                     else:
                         cid = glovar.exchange_channel_id
