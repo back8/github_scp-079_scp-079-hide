@@ -45,13 +45,13 @@ def receive_text_data(message: Message) -> dict:
 def receive_version_reply(client: Client, sender: str, data: dict) -> bool:
     # Receive version reply
     try:
-        admin_id = data["admin_id"]
-        message_id = data["message_id"]
+        aid = data["admin_id"]
+        mid = data["message_id"]
         version = data["version"]
-        text = (f"管理员：{user_mention(admin_id)}\n\n"
+        text = (f"管理员：{user_mention(aid)}\n\n"
                 f"发送者：{code(sender)}\n"
                 f"版本：{bold(version)}\n")
-        thread(send_message, (client, glovar.test_group_id, text, message_id))
+        thread(send_message, (client, glovar.test_group_id, text, mid))
 
         return True
     except Exception as e:
