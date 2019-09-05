@@ -68,6 +68,7 @@ try:
     test_group_id = int(config["channels"].get("test_group_id", test_group_id))
     # [custom]
     hiders = config["custom"].get("hiders", hiders)
+    hiders = set(hiders.split())
 except Exception as e:
     logger.warning(f"Read data from config.ini error: {e}", exc_info=True)
 
@@ -78,12 +79,9 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or exchange_channel_id == 0
         or hide_channel_id == 0
         or test_group_id == 0
-        or hiders in {"", "[DATA EXPUNGED]"}):
+        or hiders in {"", "[DATA EXPUNGED]"} or hiders == set()):
     logger.critical("No proper settings")
     raise SystemExit("No proper settings")
-
-# Get hiders
-hiders = set(hiders.split(" "))
 
 # Start program
 copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
