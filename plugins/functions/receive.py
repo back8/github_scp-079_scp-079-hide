@@ -49,7 +49,7 @@ def receive_version_reply(client: Client, sender: str, data: dict) -> bool:
         mid = data["message_id"]
         version = data["version"]
         text = (f"管理员：{user_mention(aid)}\n\n"
-                f"发送者：{code(sender)}\n"
+                f"项目编号：{code(sender)}\n"
                 f"版本：{bold(version)}\n")
         thread(send_message, (client, glovar.test_group_id, text, mid))
 
