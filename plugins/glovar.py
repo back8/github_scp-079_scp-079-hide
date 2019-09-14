@@ -48,12 +48,15 @@ prefix_str: str = "/!"
 
 # [channels]
 critical_channel_id: int = 0
+debug_channel_id: int = 0
 exchange_channel_id: int = 0
 hide_channel_id: int = 0
 test_group_id: int = 0
 
 # [custom]
 hiders: Union[str, Set[str]] = ""
+project_link: str = ""
+project_name: str = ""
 
 try:
     config = RawConfigParser()
@@ -63,12 +66,15 @@ try:
     prefix = list(config["basic"].get("prefix", prefix_str))
     # [channels]
     critical_channel_id = int(config["channels"].get("critical_channel_id", critical_channel_id))
+    debug_channel_id = int(config["channels"].get("debug_channel_id", debug_channel_id))
     exchange_channel_id = int(config["channels"].get("exchange_channel_id", exchange_channel_id))
     hide_channel_id = int(config["channels"].get("hide_channel_id", hide_channel_id))
     test_group_id = int(config["channels"].get("test_group_id", test_group_id))
     # [custom]
     hiders = config["custom"].get("hiders", hiders)
     hiders = set(hiders.split())
+    project_link = config["custom"].get("project_link", project_link)
+    project_name = config["custom"].get("project_name", project_name)
 except Exception as e:
     logger.warning(f"Read data from config.ini error: {e}", exc_info=True)
 
@@ -76,10 +82,13 @@ except Exception as e:
 if (bot_token in {"", "[DATA EXPUNGED]"}
         or prefix == []
         or critical_channel_id == 0
+        or debug_channel_id == 0
         or exchange_channel_id == 0
         or hide_channel_id == 0
         or test_group_id == 0
-        or hiders in {"", "[DATA EXPUNGED]"} or hiders == set()):
+        or hiders in {"", "[DATA EXPUNGED]"} or hiders == set()
+        or project_link in {"", "[DATA EXPUNGED]"}
+        or project_name in {"", "[DATA EXPUNGED]"}):
     logger.critical("No proper settings")
     raise SystemExit("No proper settings")
 
