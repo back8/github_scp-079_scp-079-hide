@@ -92,9 +92,11 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or exchange_channel_id == 0
         or hide_channel_id == 0
         or test_group_id == 0
+        or backup not in {False, True}
         or hiders in {"", "[DATA EXPUNGED]"} or hiders == set()
         or project_link in {"", "[DATA EXPUNGED]"}
-        or project_name in {"", "[DATA EXPUNGED]"}):
+        or project_name in {"", "[DATA EXPUNGED]"}
+        or zh_cn not in {False, True}):
     logger.critical("No proper settings")
     raise SystemExit("No proper settings")
 
