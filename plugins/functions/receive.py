@@ -22,7 +22,7 @@ from json import loads
 from pyrogram import Client, Message
 
 from .. import glovar
-from .etc import bold, code, get_text, thread, user_mention
+from .etc import bold, code, get_text, lang, thread, user_mention
 from .telegram import send_message
 
 # Enable logging
@@ -48,9 +48,9 @@ def receive_version_reply(client: Client, sender: str, data: dict) -> bool:
         aid = data["admin_id"]
         mid = data["message_id"]
         version = data["version"]
-        text = (f"管理员：{user_mention(aid)}\n\n"
-                f"项目编号：{code(sender)}\n"
-                f"版本：{bold(version)}\n")
+        text = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n"
+                f"{lang('project')}{lang('colon')}{code(sender)}\n"
+                f"{lang('version')}{lang('colon')}{bold(version)}\n")
         thread(send_message, (client, glovar.test_group_id, text, mid))
 
         return True

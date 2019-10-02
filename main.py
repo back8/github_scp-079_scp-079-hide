@@ -35,11 +35,18 @@ app = Client(
     session_name="bot",
     bot_token=glovar.bot_token
 )
+app.start()
+
+# Send online status
+update_status(app, "online")
 
 # Timer
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_status, "cron", [app], minute=30)
+scheduler.add_job(update_status, "cron", [app, "awake"], minute=30)
 scheduler.start()
 
-# Run
-app.run()
+# Hold
+app.idle()
+
+# Stop
+app.stop()

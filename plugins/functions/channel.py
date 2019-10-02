@@ -23,7 +23,7 @@ from typing import List, Union
 from pyrogram import Client
 
 from .. import glovar
-from .etc import code, code_block, thread
+from .etc import code, code_block, lang, thread
 from .telegram import send_message
 
 # Enable logging
@@ -41,9 +41,9 @@ def exchange_to_hide(client: Client) -> bool:
             action_type="hide",
             data=True
         )
-        text = (f"项目编号：{code(glovar.sender)}\n"
-                f"发现状况：{code('数据交换频道失效')}\n"
-                f"自动处理：{code('启用 1 号协议')}\n")
+        text = (f"{lang('project')}{lang('colon')}{code(glovar.sender)}\n"
+                f"{lang('issue')}{lang('colon')}{code(lang('exchange_invalid'))}\n"
+                f"{lang('auto_fix')}{lang('colon')}{code(lang('protocol_1'))}\n")
         thread(send_message, (client, glovar.critical_channel_id, text))
 
         return True
@@ -74,7 +74,7 @@ def format_data(sender: str, receivers: List[str], action: str, action_type: str
 
 def share_data(client: Client, receivers: List[str], action: str, action_type: str,
                data: Union[bool, dict, int, str]) -> bool:
-    # Use this function to share data in the exchange channel
+    # Use this function to share data in the channel
     try:
         if glovar.sender in receivers:
             receivers.remove(glovar.sender)
@@ -93,6 +93,7 @@ def share_data(client: Client, receivers: List[str], action: str, action_type: s
                 data=data
             )
             result = send_message(client, channel_id, text)
+
             # Sending failed due to channel issue
             if result is False and not glovar.should_hide:
                 # Use hide channel instead
