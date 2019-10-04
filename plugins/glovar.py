@@ -60,6 +60,9 @@ project_link: str = ""
 project_name: str = ""
 zh_cn: Union[str, bool] = ""
 
+# [encrypt]
+password: str = ""
+
 try:
     config = RawConfigParser()
     config.read("config.ini")
@@ -81,6 +84,8 @@ try:
     project_name = config["custom"].get("project_name", project_name)
     zh_cn = config["custom"].get("zh_cn", zh_cn)
     zh_cn = eval(zh_cn)
+    # [encrypt]
+    password = config["encrypt"].get("password", password)
 except Exception as e:
     logger.warning(f"Read data from config.ini error: {e}", exc_info=True)
 
@@ -96,7 +101,8 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or hiders in {"", "[DATA EXPUNGED]"} or hiders == set()
         or project_link in {"", "[DATA EXPUNGED]"}
         or project_name in {"", "[DATA EXPUNGED]"}
-        or zh_cn not in {False, True}):
+        or zh_cn not in {False, True}
+        or password in {"", "[DATA EXPUNGED]"}):
     logger.critical("No proper settings")
     raise SystemExit("No proper settings")
 

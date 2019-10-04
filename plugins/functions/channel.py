@@ -41,6 +41,8 @@ def exchange_to_hide(client: Client) -> bool:
             action_type="hide",
             data=True
         )
+
+        # Send debug message
         text = (f"{lang('project')}{lang('colon')}{code(glovar.sender)}\n"
                 f"{lang('issue')}{lang('colon')}{code(lang('exchange_invalid'))}\n"
                 f"{lang('auto_fix')}{lang('colon')}{code(lang('protocol_1'))}\n")
@@ -79,26 +81,28 @@ def share_data(client: Client, receivers: List[str], action: str, action_type: s
         if glovar.sender in receivers:
             receivers.remove(glovar.sender)
 
-        if receivers:
-            if glovar.should_hide or action == "version":
-                channel_id = glovar.hide_channel_id
-            else:
-                channel_id = glovar.exchange_channel_id
+        if not receivers:
+            return True
 
-            text = format_data(
-                sender=glovar.sender,
-                receivers=receivers,
-                action=action,
-                action_type=action_type,
-                data=data
-            )
-            result = send_message(client, channel_id, text)
+        if glovar.should_hide or action == "version":
+            channel_id = glovar.hide_channel_id
+        else:
+            channel_id = glovar.exchange_channel_id
 
-            # Sending failed due to channel issue
-            if result is False and not glovar.should_hide:
-                # Use hide channel instead
-                exchange_to_hide(client)
-                thread(share_data, (client, receivers, action, action_type, data))
+        text = format_data(
+            sender=glovar.sender,
+            receivers=receivers,
+            action=action,
+            action_type=action_type,
+            data=data
+        )
+        result = send_message(client, channel_id, text)
+
+        # Sending failed due to channel issue
+        if result is False and not glovar.should_hide:
+            # Use hide channel instead
+            exchange_to_hide(client)
+            thread(share_data, (client, receivers, action, action_type, data))
 
             return True
     except Exception as e:

@@ -28,6 +28,24 @@ from .etc import wait_flood
 logger = logging.getLogger(__name__)
 
 
+def download_media(client: Client, file_id: str, file_ref: str, file_path: str):
+    # Download a media file
+    result = None
+    try:
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.download_media(message=file_id, file_ref=file_ref, file_name=file_path)
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+    except Exception as e:
+        logger.warning(f"Download media {file_id} to {file_path} error: {e}", exc_info=True)
+
+    return result
+
+
 def forward_messages(client: Client, cid: int, fid: int, mids: Iterable,
                      as_copy: bool = False) -> Union[List[Message], bool]:
     # Forward messages to a chat

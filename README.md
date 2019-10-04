@@ -13,7 +13,7 @@ See [this article](https://scp-079.org/hide/).
 ## Requirements
 
 - Python 3.6 or higher
-- pip: `pip install -r requirements.txt` or `pip install -U APScheduler pyrogram[fast]`
+- pip: `pip install -r requirements.txt` or `pip install -U APScheduler pyAesCrypt pyrogram[fast]`
 
 ## Files
 
@@ -21,6 +21,7 @@ See [this article](https://scp-079.org/hide/).
     - functions
         - `channel.py` : Functions about channel
         - `etc.py` : Miscellaneous
+        - `file.py` : Save files
         - `filters.py` : Some filters
         - `receive.py` : Receive data from exchange channel
         - `telegram.py` : Some telegram functions

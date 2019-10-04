@@ -24,7 +24,7 @@ from .. import glovar
 from ..functions.channel import exchange_to_hide
 from ..functions.etc import code, general_link, lang, thread
 from ..functions.filters import exchange_channel, hide_channel
-from ..functions.receive import receive_text_data, receive_version_reply
+from ..functions.receive import receive_help_send, receive_text_data, receive_version_reply
 from ..functions.telegram import forward_messages, send_message
 
 # Enable logging
@@ -112,6 +112,10 @@ def forward_hiders_data(client: Client, message: Message) -> bool:
                     if action == "version":
                         if action_type == "reply":
                             receive_version_reply(client, sender, data)
+
+                    elif action == "help":
+                        if action_type == "send":
+                            receive_help_send(client, message, data)
                 # Forward regular exchange text
                 else:
                     cid = glovar.exchange_channel_id
