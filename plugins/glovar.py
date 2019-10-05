@@ -112,7 +112,6 @@ lang: Dict[str, str] = {
     "admin": (zh_cn and "管理员") or "Admin",
     # Basic
     "colon": (zh_cn and "：") or ": ",
-    "project": (zh_cn and "项目编号") or "Project",
     "version": (zh_cn and "版本") or "Version",
     # Emergency
     "issue": (zh_cn and "发现状况") or "Issue",
@@ -120,7 +119,9 @@ lang: Dict[str, str] = {
     "auto_fix": (zh_cn and "自动处理") or "Auto Fix",
     "protocol_1": (zh_cn and "启动 1 号协议") or "Initiate Protocol 1",
     "transfer_channel": (zh_cn and "频道转移") or "Transfer Channel",
-    "emergency_channel": (zh_cn and "应急频道") or "Emergency Channel"
+    "emergency_channel": (zh_cn and "应急频道") or "Emergency Channel",
+    # Record
+    "project": (zh_cn and "项目编号") or "Project"
 }
 
 # Start program
