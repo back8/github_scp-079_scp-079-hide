@@ -54,11 +54,11 @@ hide_channel_id: int = 0
 test_group_id: int = 0
 
 # [custom]
-backup: Union[str, bool] = ""
+backup: Union[bool, str] = ""
 hiders: Union[str, Set[str]] = ""
 project_link: str = ""
 project_name: str = ""
-zh_cn: Union[str, bool] = ""
+zh_cn: Union[bool, str] = ""
 
 # [encrypt]
 password: str = ""
