@@ -46,20 +46,26 @@ def exchange_emergency(client: Client, message: Message) -> bool:
         action = data["action"]
         action_type = data["type"]
         data = data["data"]
-        if "EMERGENCY" in receivers:
-            if action == "backup":
-                if action_type == "hide":
-                    if data is True:
-                        glovar.should_hide = data
-                    elif data is False and sender == "MANAGE":
-                        glovar.should_hide = data
+        if "EMERGENCY" not in receivers:
+            return True
 
-                    project_text = general_link(glovar.project_name, glovar.project_link)
-                    hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
-                    text = (f"{lang('project')}{lang('colon')}{project_text}\n"
-                            f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
-                            f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
-                    thread(send_message, (client, glovar.debug_channel_id, text))
+        if action != "backup":
+            return True
+
+        if action_type != "hide":
+            return True
+
+        if data is True:
+            glovar.should_hide = data
+        elif data is False and sender == "MANAGE":
+            glovar.should_hide = data
+
+        project_text = general_link(glovar.project_name, glovar.project_link)
+        hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
+        text = (f"{lang('project')}{lang('colon')}{project_text}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
+                f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
+        thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
     except Exception as e:
@@ -72,17 +78,19 @@ def exchange_emergency(client: Client, message: Message) -> bool:
 def forward_others_data(client: Client, message: Message) -> bool:
     # Forward message from other bots to hiders
     try:
-        if not glovar.should_hide:
-            data = receive_text_data(message)
-            if not data:
-                return True
+        if glovar.should_hide:
+            return True
 
-            receivers = data["to"]
-            if any([hider in receivers for hider in glovar.hiders]):
-                cid = glovar.hide_channel_id
-                fid = message.chat.id
-                mid = message.message_id
-                thread(forward_messages, (client, cid, fid, [mid], True))
+        data = receive_text_data(message)
+        if not data:
+            return True
+
+        receivers = data["to"]
+        if any([hider in receivers for hider in glovar.hiders]):
+            cid = glovar.hide_channel_id
+            fid = message.chat.id
+            mid = message.message_id
+            thread(forward_messages, (client, cid, fid, [mid], True))
 
         return True
     except Exception as e:
@@ -96,33 +104,35 @@ def forward_others_data(client: Client, message: Message) -> bool:
 def forward_hiders_data(client: Client, message: Message) -> bool:
     # Forward message from hiders to other bots
     try:
-        if not glovar.should_hide:
-            data = receive_text_data(message)
-            if not data:
-                return True
+        data = receive_text_data(message)
+        if not data:
+            return True
 
-            sender = data["from"]
-            receivers = data["to"]
-            action = data["action"]
-            action_type = data["type"]
-            data = data["data"]
-            if sender in glovar.hiders:
-                # Send version text to TEST group
-                if glovar.sender in receivers:
-                    if action == "version":
-                        if action_type == "reply":
-                            receive_version_reply(client, sender, data)
+        sender = data["from"]
+        receivers = data["to"]
+        action = data["action"]
+        action_type = data["type"]
+        data = data["data"]
+        if sender in glovar.hiders:
+            # Send version text to TEST group
+            if glovar.sender in receivers:
+                if action == "version":
+                    if action_type == "reply":
+                        receive_version_reply(client, sender, data)
 
-                    elif action == "help":
-                        if action_type == "send":
-                            receive_help_send(client, message, data)
-                # Forward regular exchange text
-                else:
-                    cid = glovar.exchange_channel_id
-                    fid = message.chat.id
-                    mid = message.message_id
-                    if forward_messages(client, cid, fid, [mid], True) is False:
-                        exchange_to_hide(client)
+                elif action == "help":
+                    if action_type == "send":
+                        receive_help_send(client, message, data)
+            # Forward regular exchange text
+            else:
+                if glovar.should_hide:
+                    return True
+
+                cid = glovar.exchange_channel_id
+                fid = message.chat.id
+                mid = message.message_id
+                if forward_messages(client, cid, fid, [mid], True) is False:
+                    exchange_to_hide(client)
 
         return True
     except Exception as e:
