@@ -114,6 +114,7 @@ def forward_hiders_data(client: Client, message: Message) -> bool:
         action = data["action"]
         action_type = data["type"]
         data = data["data"]
+
         if sender in glovar.hiders:
             # Send version text to TEST group
             if glovar.sender in receivers:

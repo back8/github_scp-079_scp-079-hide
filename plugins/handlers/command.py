@@ -34,9 +34,12 @@ logger = logging.getLogger(__name__)
 def version(client: Client, message: Message) -> bool:
     # Check the program's version
     try:
+        # Basic data
         cid = message.chat.id
         aid = message.from_user.id
         mid = message.message_id
+
+        # Send the report message
         text = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n"
                 f"{lang('version')}{lang('colon')}{bold(glovar.version)}\n")
         thread(send_message, (client, cid, text, mid))

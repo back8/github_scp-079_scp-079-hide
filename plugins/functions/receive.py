@@ -70,8 +70,10 @@ def receive_file_data(client: Client, message: Message, decrypt: bool = True) ->
 def receive_help_send(client: Client, message: Message, data: int) -> bool:
     # Receive help send
     try:
+        # Basic data
         cid = data
         text = receive_file_data(client, message)
+
         if text:
             thread(send_message, (client, cid, text))
     except Exception as e:
@@ -96,9 +98,12 @@ def receive_text_data(message: Message) -> dict:
 def receive_version_reply(client: Client, sender: str, data: dict) -> bool:
     # Receive version reply
     try:
+        # Basic data
         aid = data["admin_id"]
         mid = data["message_id"]
         version = data["version"]
+
+        # Send the report message
         text = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n"
                 f"{lang('project')}{lang('colon')}{code(sender)}\n"
                 f"{lang('version')}{lang('colon')}{bold(version)}\n")
