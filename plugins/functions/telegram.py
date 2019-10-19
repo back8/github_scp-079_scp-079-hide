@@ -68,7 +68,7 @@ def forward_messages(client: Client, cid: int, fid: int, mids: Iterable,
             except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
                 return False
     except Exception as e:
-        logger.warning(f"Forward messages error: {e}", exc_info=True)
+        logger.warning(f"Forward messages {mids} from {fid} to {cid} error: {e}", exc_info=True)
 
     return result
 
@@ -97,7 +97,7 @@ def send_document(client: Client, cid: int, document: str, file_ref: str = None,
             except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
                 return False
     except Exception as e:
-        logger.warning(f"Send document to {cid} error: {e}", exec_info=True)
+        logger.warning(f"Send document {document} to {cid} error: {e}", exec_info=True)
 
     return result
 
