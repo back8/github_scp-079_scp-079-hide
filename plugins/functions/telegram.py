@@ -20,7 +20,7 @@ import logging
 from typing import Iterable, List, Optional, Union
 
 from pyrogram import Client, InlineKeyboardMarkup, Message
-from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
+from pyrogram.errors import ButtonDataInvalid, ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
 
 from .etc import wait_flood
 
@@ -96,6 +96,8 @@ def send_document(client: Client, cid: int, document: str, file_ref: str = None,
                 wait_flood(e)
             except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
                 return False
+            except ButtonDataInvalid:
+                logger.warning(f"Send document {document} to {cid} - invalid markup: {markup}")
     except Exception as e:
         logger.warning(f"Send document {document} to {cid} error: {e}", exec_info=True)
 
@@ -127,6 +129,8 @@ def send_message(client: Client, cid: int, text: str, mid: int = None,
                 wait_flood(e)
             except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
                 return False
+            except ButtonDataInvalid:
+                logger.warning(f"Send message to {cid} - invalid markup: {markup}")
     except Exception as e:
         logger.warning(f"Send message to {cid} error: {e}", exc_info=True)
 

@@ -24,7 +24,7 @@ from typing import Any
 from pyrogram import Client, Message
 
 from .. import glovar
-from .etc import bold, code, get_text, lang, thread, user_mention
+from .etc import bold, code, get_text, lang, thread, mention_id
 from .file import crypt_file, delete_file, get_downloaded_path, get_new_path
 from .telegram import send_message
 
@@ -74,8 +74,10 @@ def receive_help_send(client: Client, message: Message, data: int) -> bool:
         cid = data
         text = receive_file_data(client, message)
 
-        if text:
-            thread(send_message, (client, cid, text))
+        if not text:
+            return True
+
+        thread(send_message, (client, cid, text))
     except Exception as e:
         logger.warning(f"Receive help send error: {e}", exc_info=True)
 
@@ -87,10 +89,13 @@ def receive_text_data(message: Message) -> dict:
     data = {}
     try:
         text = get_text(message)
-        if text:
-            data = loads(text)
+
+        if not text:
+            return {}
+
+        data = loads(text)
     except Exception as e:
-        logger.warning(f"Receive data error: {e}")
+        logger.warning(f"Receive text data error: {e}")
 
     return data
 
@@ -104,7 +109,7 @@ def receive_version_reply(client: Client, sender: str, data: dict) -> bool:
         version = data["version"]
 
         # Send the report message
-        text = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n"
+        text = (f"{lang('admin')}{lang('colon')}{mention_id(aid)}\n\n"
                 f"{lang('project')}{lang('colon')}{code(sender)}\n"
                 f"{lang('version')}{lang('colon')}{bold(version)}\n")
         thread(send_message, (client, glovar.test_group_id, text, mid))

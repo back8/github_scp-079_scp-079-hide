@@ -22,15 +22,17 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import share_data
-from ..functions.etc import bold, lang, thread, user_mention
+from ..functions.etc import bold, lang, thread, mention_id
 from ..functions.filters import from_user, test_group
 from ..functions.telegram import send_message
 
 # Enable logging
 logger = logging.getLogger(__name__)
 
-@Client.on_message(Filters.incoming & Filters.group & test_group & from_user
-                   & Filters.command(["version"], glovar.prefix))
+
+@Client.on_message(Filters.incoming & Filters.group & Filters.command(["version"], glovar.prefix)
+                   & test_group
+                   & from_user)
 def version(client: Client, message: Message) -> bool:
     # Check the program's version
     try:
@@ -40,7 +42,7 @@ def version(client: Client, message: Message) -> bool:
         mid = message.message_id
 
         # Send the report message
-        text = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n"
+        text = (f"{lang('admin')}{lang('colon')}{mention_id(aid)}\n\n"
                 f"{lang('version')}{lang('colon')}{bold(glovar.version)}\n")
         thread(send_message, (client, cid, text, mid))
 

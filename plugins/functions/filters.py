@@ -17,8 +17,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+from typing import Union
 
-from pyrogram import Filters, Message
+from pyrogram import CallbackQuery, Filters, Message
 
 from .. import glovar
 
@@ -29,13 +30,14 @@ logger = logging.getLogger(__name__)
 def is_exchange_channel(_, message: Message) -> bool:
     # Check if the message is sent from the exchange channel
     try:
-        if message.chat:
-            cid = message.chat.id
-            if glovar.should_hide:
-                if cid == glovar.hide_channel_id:
-                    return True
-            elif cid == glovar.exchange_channel_id:
-                return True
+        if not message.chat:
+            return False
+
+        cid = message.chat.id
+        if glovar.should_hide:
+            return cid == glovar.hide_channel_id
+        else:
+            return cid == glovar.exchange_channel_id
     except Exception as e:
         logger.warning(f"Is exchange channel error: {e}", exc_info=True)
 
@@ -56,23 +58,32 @@ def is_from_user(_, message: Message) -> bool:
 def is_hide_channel(_, message: Message) -> bool:
     # Check if the message is sent from the hide channel
     try:
-        if message.chat:
-            cid = message.chat.id
-            if cid == glovar.hide_channel_id:
-                return True
+        if not message.chat:
+            return False
+
+        cid = message.chat.id
+        if cid == glovar.hide_channel_id:
+            return True
     except Exception as e:
         logger.warning(f"Is hide channel error: {e}", exc_info=True)
 
     return False
 
 
-def is_test_group(_, message: Message) -> bool:
+def is_test_group(_, update: Union[CallbackQuery, Message]) -> bool:
     # Check if the message is sent from the test group
     try:
-        if message.chat:
-            cid = message.chat.id
-            if cid == glovar.test_group_id:
-                return True
+        if isinstance(update, CallbackQuery):
+            message = update.message
+        else:
+            message = update
+
+        if not message.chat:
+            return False
+
+        cid = message.chat.id
+        if cid == glovar.test_group_id:
+            return True
     except Exception as e:
         logger.warning(f"Is test group error: {e}", exc_info=True)
 
