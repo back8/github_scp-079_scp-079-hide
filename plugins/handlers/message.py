@@ -80,6 +80,7 @@ def exchange_emergency(client: Client, message: Message) -> bool:
                    & exchange_channel)
 def forward_others_data(client: Client, message: Message) -> bool:
     # Forward message from other bots to hiders
+    glovar.locks["receive"].acquire()
     try:
         if glovar.should_hide:
             return True
@@ -100,6 +101,8 @@ def forward_others_data(client: Client, message: Message) -> bool:
         return True
     except Exception as e:
         logger.warning(f"Forward others data error: {e}", exc_info=True)
+    finally:
+        glovar.locks["receive"].release()
 
     return False
 
@@ -108,6 +111,7 @@ def forward_others_data(client: Client, message: Message) -> bool:
                    & hide_channel)
 def forward_hiders_data(client: Client, message: Message) -> bool:
     # Forward message from hiders to other bots
+    glovar.locks["receive"].acquire()
     try:
         data = receive_text_data(message)
 
@@ -147,5 +151,7 @@ def forward_hiders_data(client: Client, message: Message) -> bool:
         return True
     except Exception as e:
         logger.warning(f"Forward hiders data error: {e}", exc_info=True)
+    finally:
+        glovar.locks["receive"].release()
 
     return False

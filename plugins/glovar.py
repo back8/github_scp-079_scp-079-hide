@@ -18,6 +18,7 @@
 
 import logging
 from configparser import RawConfigParser
+from threading import Lock
 from typing import Dict, List, Set, Union
 
 # Enable logging
@@ -28,16 +29,6 @@ logging.basicConfig(
     filemode="w"
 )
 logger = logging.getLogger(__name__)
-
-# Init
-
-all_commands: List[str] = ["version"]
-
-sender: str = "HIDE"
-
-should_hide: bool = False
-
-version: str = "0.1.1"
 
 # Read data from config.ini
 
@@ -123,6 +114,20 @@ lang: Dict[str, str] = {
     # Record
     "project": (zh_cn and "项目编号") or "Project"
 }
+
+# Init
+
+all_commands: List[str] = ["version"]
+
+locks: Dict[str, Lock] = {
+    "receive": Lock()
+}
+
+sender: str = "HIDE"
+
+should_hide: bool = False
+
+version: str = "0.1.1"
 
 # Start program
 copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
