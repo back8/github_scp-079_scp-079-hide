@@ -92,7 +92,7 @@ def forward_others_data(client: Client, message: Message) -> bool:
 
         receivers = data["to"]
 
-        if any([hider in receivers for hider in glovar.hiders]):
+        if any(hider in receivers for hider in glovar.hiders):
             cid = glovar.hide_channel_id
             fid = message.chat.id
             mid = message.message_id
