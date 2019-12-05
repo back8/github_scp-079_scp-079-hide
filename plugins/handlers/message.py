@@ -140,7 +140,7 @@ def forward_hiders_data(client: Client, message: Message) -> bool:
                     receive_help_send(client, message, data)
 
         # Forward regular exchange text
-        elif not message.from_user.is_self:
+        elif not message.outgoing:
             if glovar.should_hide:
                 return True
 
