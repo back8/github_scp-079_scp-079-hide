@@ -107,7 +107,8 @@ def forward_others_data(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.channel & ~Filters.command(glovar.all_commands, glovar.prefix)
+@Client.on_message((Filters.incoming or glovar.aio) & Filters.channel
+                   & ~Filters.command(glovar.all_commands, glovar.prefix)
                    & hide_channel)
 def forward_hiders_data(client: Client, message: Message) -> bool:
     # Forward message from hiders to other bots
@@ -127,8 +128,9 @@ def forward_hiders_data(client: Client, message: Message) -> bool:
         if sender not in glovar.hiders:
             return True
 
-        # Send version text to TEST group
+        # Help hiders
         if glovar.sender in receivers:
+
             if action == "version":
                 if action_type == "reply":
                     receive_version_reply(client, sender, data)
@@ -136,8 +138,9 @@ def forward_hiders_data(client: Client, message: Message) -> bool:
             elif action == "help":
                 if action_type == "send":
                     receive_help_send(client, message, data)
+
         # Forward regular exchange text
-        else:
+        elif not message.from_user.is_self:
             if glovar.should_hide:
                 return True
 
