@@ -4,7 +4,8 @@ This bot is used to hide the real sender.
 
 ## How to use
 
-See [this article](https://scp-079.org/hide/).
+- See [this article](https://scp-079.org/hide/) to build a bot by yourself
+- Discuss [group](https://t.me/SCP_079_CHAT)
 
 ## To Do List
 
