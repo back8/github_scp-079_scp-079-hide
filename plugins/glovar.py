@@ -58,15 +58,18 @@ password: str = ""
 try:
     config = RawConfigParser()
     config.read("config.ini")
+
     # [basic]
     bot_token = config["basic"].get("bot_token", bot_token)
     prefix = list(config["basic"].get("prefix", prefix_str))
+
     # [channels]
     critical_channel_id = int(config["channels"].get("critical_channel_id", critical_channel_id))
     debug_channel_id = int(config["channels"].get("debug_channel_id", debug_channel_id))
     exchange_channel_id = int(config["channels"].get("exchange_channel_id", exchange_channel_id))
     hide_channel_id = int(config["channels"].get("hide_channel_id", hide_channel_id))
     test_group_id = int(config["channels"].get("test_group_id", test_group_id))
+
     # [custom]
     aio = config["custom"].get("aio", aio)
     aio = eval(aio)
@@ -77,6 +80,7 @@ try:
     project_link = config["custom"].get("project_link", project_link)
     project_name = config["custom"].get("project_name", project_name)
     zh_cn = config["custom"].get("zh_cn", zh_cn)
+
     zh_cn = eval(zh_cn)
     # [encrypt]
     password = config["encrypt"].get("password", password)
@@ -131,9 +135,9 @@ sender: str = "HIDE"
 
 should_hide: bool = False
 
-version: str = "0.1.1"
+version: str = "0.1.2"
 
 # Start program
-copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
+copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019-2020 SCP-079 <https://scp-079.org>\n"
                   "Licensed under the terms of the GNU General Public License v3 or later (GPLv3+)\n")
 print(copyright_text)
