@@ -23,7 +23,7 @@ from pyrogram import Client, Filters, Message
 from .. import glovar
 from ..functions.channel import exchange_to_hide
 from ..functions.etc import code, general_link, lang, thread
-from ..functions.filters import exchange_channel, hide_channel
+from ..functions.filters import aio, exchange_channel, hide_channel
 from ..functions.receive import receive_help_send, receive_text_data, receive_version_reply
 from ..functions.telegram import forward_messages, send_message
 
@@ -107,7 +107,7 @@ def forward_others_data(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message((Filters.incoming or glovar.aio) & Filters.channel
+@Client.on_message((Filters.incoming | aio) & Filters.channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix)
                    & hide_channel)
 def forward_hiders_data(client: Client, message: Message) -> bool:
