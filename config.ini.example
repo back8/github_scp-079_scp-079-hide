@@ -25,12 +25,12 @@ hide_channel_id = [DATA EXPUNGED]
 test_group_id = [DATA EXPUNGED]
 
 [custom]
-aio = [DATA EXPUNGED]
-backup = [DATA EXPUNGED]
-hiders = [DATA EXPUNGED]
+aio = False
+backup = False
+hiders = AVATAR WATCH
 project_link = https://scp-079.org/hide/
 project_name = SCP-079-HIDE
-zh_cn = [DATA EXPUNGED]
+zh_cn = True
 
 [encrypt]
 password = [DATA EXPUNGED]
