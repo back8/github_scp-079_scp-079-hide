@@ -48,6 +48,23 @@ def version(client: Client, message: Message) -> bool:
         # Get command type
         command_type = get_command_type(message)
 
+        # Request version update
+        for hider in glovar.hiders:
+            if command_type.upper() not in glovar.hiders:
+                continue
+
+            share_data(
+                client=client,
+                receivers=[hider],
+                action="version",
+                action_type="ask",
+                data={
+                    "admin_id": aid,
+                    "group_id": glovar.test_group_id,
+                    "message_id": mid
+                }
+            )
+
         # Check the command type
         if command_type and command_type.upper() != glovar.sender:
             return False
@@ -71,20 +88,6 @@ def version(client: Client, message: Message) -> bool:
 
         # Send the report message
         result = send_message(client, cid, text, mid)
-
-        # Request version update
-        for hider in glovar.hiders:
-            share_data(
-                client=client,
-                receivers=[hider],
-                action="version",
-                action_type="ask",
-                data={
-                    "admin_id": aid,
-                    "group_id": glovar.test_group_id,
-                    "message_id": mid
-                }
-            )
     except Exception as e:
         logger.warning(f"Version error: {e}", exc_info=True)
 
