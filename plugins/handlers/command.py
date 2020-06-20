@@ -50,7 +50,7 @@ def version(client: Client, message: Message) -> bool:
 
         # Request version update
         for hider in glovar.hiders:
-            if command_type.upper() not in glovar.hiders:
+            if hider != command_type.upper():
                 continue
 
             share_data(
