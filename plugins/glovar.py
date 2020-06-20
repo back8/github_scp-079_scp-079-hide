@@ -64,11 +64,11 @@ try:
     prefix = list(config["basic"].get("prefix", prefix_str))
 
     # [channels]
-    critical_channel_id = int(config["channels"].get("critical_channel_id", critical_channel_id))
-    debug_channel_id = int(config["channels"].get("debug_channel_id", debug_channel_id))
-    exchange_channel_id = int(config["channels"].get("exchange_channel_id", exchange_channel_id))
-    hide_channel_id = int(config["channels"].get("hide_channel_id", hide_channel_id))
-    test_group_id = int(config["channels"].get("test_group_id", test_group_id))
+    critical_channel_id = int(config["channels"].get("critical_channel_id", str(critical_channel_id)))
+    debug_channel_id = int(config["channels"].get("debug_channel_id", str(debug_channel_id)))
+    exchange_channel_id = int(config["channels"].get("exchange_channel_id", str(exchange_channel_id)))
+    hide_channel_id = int(config["channels"].get("hide_channel_id", str(hide_channel_id)))
+    test_group_id = int(config["channels"].get("test_group_id", str(test_group_id)))
 
     # [custom]
     aio = config["custom"].get("aio", aio)
