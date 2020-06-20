@@ -24,7 +24,7 @@ from .. import glovar
 from ..functions.channel import exchange_to_hide
 from ..functions.etc import code, general_link, lang, thread
 from ..functions.filters import aio, exchange_channel, hide_channel
-from ..functions.receive import receive_help_send, receive_text_data, receive_version_reply
+from ..functions.receive import receive_help_send, receive_text_data
 from ..functions.telegram import forward_messages, send_message
 
 # Enable logging
@@ -80,31 +80,38 @@ def exchange_emergency(client: Client, message: Message) -> bool:
                    & exchange_channel)
 def forward_others_data(client: Client, message: Message) -> bool:
     # Forward message from other bots to hiders
+    result = False
+
     glovar.locks["receive"].acquire()
+
     try:
         if glovar.should_hide:
-            return True
+            return False
 
         data = receive_text_data(message)
 
         if not data:
-            return True
+            return False
 
+        sender = data["from"]
         receivers = data["to"]
 
-        if any(hider in receivers for hider in glovar.hiders) or receivers == ["USER"]:
-            cid = glovar.hide_channel_id
-            fid = message.chat.id
-            mid = message.message_id
-            thread(forward_messages, (client, cid, fid, [mid], True))
+        if not (any(hider in receivers for hider in glovar.hiders)
+                or (sender == "CAPTCHA" and receivers == ["USER"])):
+            return False
 
-        return True
+        cid = glovar.hide_channel_id
+        fid = message.chat.id
+        mid = message.message_id
+        thread(forward_messages, (client, cid, fid, [mid], True))
+
+        result = True
     except Exception as e:
         logger.warning(f"Forward others data error: {e}", exc_info=True)
     finally:
         glovar.locks["receive"].release()
 
-    return False
+    return result
 
 
 @Client.on_message((Filters.incoming | aio) & Filters.channel
@@ -112,12 +119,15 @@ def forward_others_data(client: Client, message: Message) -> bool:
                    & hide_channel)
 def forward_hiders_data(client: Client, message: Message) -> bool:
     # Forward message from hiders to other bots
+    result = False
+
     glovar.locks["receive"].acquire()
+
     try:
         data = receive_text_data(message)
 
         if not data:
-            return True
+            return False
 
         sender = data["from"]
         receivers = data["to"]
@@ -126,35 +136,37 @@ def forward_hiders_data(client: Client, message: Message) -> bool:
         data = data["data"]
 
         if sender not in glovar.hiders:
-            return True
+            return False
 
         # Help hiders
         if glovar.sender in receivers:
 
-            if action == "version":
-                if action_type == "reply":
-                    receive_version_reply(client, sender, data)
-
-            elif action == "help":
+            if action == "help":
                 if action_type == "send":
                     receive_help_send(client, message, data)
 
+            return True
+
         # Forward regular exchange text
-        elif not message.outgoing:
-            if glovar.should_hide:
-                return True
+        if message.outgoing:
+            return False
 
-            cid = glovar.exchange_channel_id
-            fid = message.chat.id
-            mid = message.message_id
+        if glovar.should_hide:
+            return False
 
-            if forward_messages(client, cid, fid, [mid], True) is False:
-                exchange_to_hide(client)
+        cid = glovar.exchange_channel_id
+        fid = message.chat.id
+        mid = message.message_id
 
-        return True
+        if forward_messages(client, cid, fid, [mid], True) is not False:
+            return True
+
+        exchange_to_hide(client)
+
+        result = True
     except Exception as e:
         logger.warning(f"Forward hiders data error: {e}", exc_info=True)
     finally:
         glovar.locks["receive"].release()
 
-    return False
+    return result

@@ -72,18 +72,19 @@ def version(client: Client, message: Message) -> bool:
         # Send the report message
         result = send_message(client, cid, text, mid)
 
-        # # Request version update
-        # for hider in glovar.hiders:
-        #     share_data(
-        #         client=client,
-        #         receivers=[hider],
-        #         action="version",
-        #         action_type="ask",
-        #         data={
-        #             "admin_id": aid,
-        #             "message_id": mid
-        #         }
-        #     )
+        # Request version update
+        for hider in glovar.hiders:
+            share_data(
+                client=client,
+                receivers=[hider],
+                action="version",
+                action_type="ask",
+                data={
+                    "admin_id": aid,
+                    "group_id": glovar.test_group_id,
+                    "message_id": mid
+                }
+            )
     except Exception as e:
         logger.warning(f"Version error: {e}", exc_info=True)
 

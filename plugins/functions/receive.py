@@ -23,8 +23,7 @@ from typing import Any
 
 from pyrogram import Client, Message
 
-from .. import glovar
-from .etc import bold, code, get_text, lang, thread, mention_id
+from .etc import get_text, thread
 from .file import crypt_file, delete_file, get_downloaded_path, get_new_path
 from .telegram import send_message
 
@@ -67,21 +66,29 @@ def receive_file_data(client: Client, message: Message, decrypt: bool = True) ->
     return data
 
 
-def receive_help_send(client: Client, message: Message, data: int) -> bool:
+def receive_help_send(client: Client, message: Message, data: dict) -> bool:
     # Receive help send
+    result = False
+
     try:
         # Basic data
-        cid = data
+        cid = data["chat_id"]
+        mid = data["message_id"]
+
+        # Get the text
         text = receive_file_data(client, message)
 
         if not text:
-            return True
+            return False
 
-        thread(send_message, (client, cid, text))
+        # Send the message
+        thread(send_message, (client, cid, text, mid))
+
+        result = True
     except Exception as e:
         logger.warning(f"Receive help send error: {e}", exc_info=True)
 
-    return False
+    return result
 
 
 def receive_text_data(message: Message) -> dict:
@@ -98,24 +105,3 @@ def receive_text_data(message: Message) -> dict:
         logger.warning(f"Receive text data error: {e}")
 
     return data
-
-
-def receive_version_reply(client: Client, sender: str, data: dict) -> bool:
-    # Receive version reply
-    try:
-        # Basic data
-        aid = data["admin_id"]
-        mid = data["message_id"]
-        version = data["version"]
-
-        # Send the report message
-        text = (f"{lang('admin')}{lang('colon')}{mention_id(aid)}\n\n"
-                f"{lang('project')}{lang('colon')}{code(sender)}\n"
-                f"{lang('version')}{lang('colon')}{bold(version)}\n")
-        thread(send_message, (client, glovar.test_group_id, text, mid))
-
-        return True
-    except Exception as e:
-        logger.warning(f"Receive version reply error: {e}", exc_info=True)
-
-    return False
